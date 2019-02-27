@@ -1,0 +1,131 @@
+{
+	"Historian": {
+		"name_system": "Chemical Laboratory",
+		"name": "Chemical Laboratory",
+		"location": "Basement A",
+		"device_type": "Historian",
+		"host_ip": "10.0.100.10",
+		"port": 5020,
+		"actuators": {
+			"Status": {
+				"type": "enabled",
+				"initial_value": 1
+			}
+		},
+		"sensors": {},
+		"sub_devices": {
+			"Haber Process": {
+				"name_system": "Haber Process",
+				"name": "Haber Process",
+				"location": "Basement A room B42",
+				"device_type": "Human-Machine Interface",
+				"host_ip": "10.0.100.12",
+				"hmi_ip": "172.16.61.1",
+				"interface": "ens33",
+				"actuators": {
+					"Status": {
+						"type": "enabled",
+						"initial_value": 1
+					}
+				},
+				"sensors": {},
+				"sub_devices": {
+					"Recaction Vessel Pressure": {
+						"name_system": "Reaction Vessel Pressure",
+						"name": "Reaction Vessel Pressure",
+						"location": "B42",
+						"device_type": "Controller",
+						"actuators": {
+							"Status": {
+								"type": "enabled",
+								"initial_value": 1
+							}
+						},
+						"sensors": {
+							"Pressure (MPa)": {
+								"type": "pressure",
+								"units": "MPa",
+								"initial_value": 20,
+								"variability": 3,
+								"threshold": [15, 25]
+							}
+						},
+						"sub_devices": {}
+					},
+					"Catalyst Temp": {
+						"name_system": "Catalyst Temp",
+						"name": "Catalyst Temp",
+						"location": "B42",
+						"device_type": "Controller",
+						"actuators": {
+							"Status": {
+								"type": "enabled",
+								"initial_value": 1
+							}
+						},
+						"sensors": {
+							"Temp (C)": {
+								"type": "pressure",
+								"units": "C",
+								"initial_value": 400,
+								"variability": 7,
+								"threshold": [385, 425]
+							}
+						},
+						"sub_devices": {}
+					},
+					"Hydrogen Level": {
+						"name_system": "Hydrogen Level",
+						"name": "Hydrogen Level",
+						"location": "B42",
+						"device_type": "Controller",
+						"actuators": {
+							"Status": {
+								"type": "enabled",
+								"initial_value": 1
+							}
+						},
+						"sensors": {
+							"Hydrogen Level": {
+								"type": "pressure",
+								"units": "kg",
+								"initial_value": 2000,
+								"variability": 12,
+								"threshold": [1900, 2100]
+							}
+						},
+						"sub_devices": {}
+					},
+					"Reaction Vessel Temperature": {
+						"name_system": "Reaction Vessel Temperature",
+						"name": "Reaction Vessel Temperature",
+						"location": "B42",
+						"device_type": "Controller",
+						"actuators": {
+							"Status": {
+								"type": "enabled",
+								"initial_value": 1
+							},
+							"Temperature": {
+								"type": "variable",
+								"initial_value": 400,
+								"master": "Reaction Vessel Temperature",
+								"relationship": "variable"
+							}
+						},
+						"sensors": {
+							"Reaction Vessel Temperature": {
+								"type": "temperature",
+								"units": "celsius",
+								"initial_value": 400,
+								"variability": 20,
+								"threshold": [350, 450]
+							}
+						},
+						"sub_devices": {}
+					}
+				}
+			}
+		}
+	}
+}

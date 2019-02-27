@@ -1,0 +1,151 @@
+# !/bin/python
+# SCADA Simulator
+#
+# Copyright 2018 Carnegie Mellon University. All Rights Reserved.
+#
+# NO WARRANTY. THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE ENGINEERING INSTITUTE MATERIAL IS FURNISHED ON AN "AS-IS" BASIS. CARNEGIE MELLON UNIVERSITY MAKES NO WARRANTIES OF ANY KIND, EITHER EXPRESSED OR IMPLIED, AS TO ANY MATTER INCLUDING, BUT NOT LIMITED TO, WARRANTY OF FITNESS FOR PURPOSE OR MERCHANTABILITY, EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE MATERIAL. CARNEGIE MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND WITH RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
+#
+# Released under a MIT (SEI)-style license, please see license.txt or contact permission@sei.cmu.edu for full terms.
+#
+# [DISTRIBUTION STATEMENT A] This material has been approved for public release and unlimited distribution.  Please see Copyright notice for non-US Government use and distribution.
+# This Software includes and/or makes use of the following Third-Party Software subject to its own license:
+# 1. Packery (https://packery.metafizzy.co/license.html) Copyright 2018 metafizzy.
+# 2. Bootstrap (https://getbootstrap.com/docs/4.0/about/license/) Copyright 2011-2018  Twitter, Inc. and Bootstrap Authors.
+# 3. JIT/Spacetree (https://philogb.github.io/jit/demos.html) Copyright 2013 Sencha Labs.
+# 4. html5shiv (https://github.com/aFarkas/html5shiv/blob/master/MIT%20and%20GPL2%20licenses.md) Copyright 2014 Alexander Farkas.
+# 5. jquery (https://jquery.org/license/) Copyright 2018 jquery foundation.
+# 6. CanvasJS (https://canvasjs.com/license/) Copyright 2018 fenopix.
+# 7. Respond.js (https://github.com/scottjehl/Respond/blob/master/LICENSE-MIT) Copyright 2012 Scott Jehl.
+# 8. Datatables (https://datatables.net/license/) Copyright 2007 SpryMedia.
+# 9. jquery-bridget (https://github.com/desandro/jquery-bridget) Copyright 2018 David DeSandro.
+# 10. Draggabilly (https://draggabilly.desandro.com/) Copyright 2018 David DeSandro.
+# 11. Business Casual Bootstrap Theme (https://startbootstrap.com/template-overviews/business-casual/) Copyright 2013 Blackrock Digital LLC.
+# 12. Glyphicons Fonts (https://www.glyphicons.com/license/) Copyright 2010 - 2018 GLYPHICONS.
+# 13. Bootstrap Toggle (http://www.bootstraptoggle.com/) Copyright 2011-2014 Min Hur, The New York Times.
+# DM18-1351
+#
+
+import sys
+import json
+import getopt
+import requests
+import subprocess
+
+
+def generate_network(name, interface, subnet, gateway):
+    print("Name: %s Interface: %s Subnet: %s Gateway: %s" % (name,interface,subnet,gateway))
+    try:
+        subprocess.call("docker network create -o \"com.docker.network.bridge.name\"=\"br-%s\" --subnet %s --gateway %s %s"
+                        % (name, subnet, gateway, name), shell=True)
+        subprocess.check_output(["brctl", "addif", "br-%s" % name, interface])
+        return True
+    except subprocess.CalledProcessError as e:
+        print e.output
+        return False
+
+
+def get_existing_containers():
+    containers = []
+    ps_output = subprocess.check_output(["docker", "ps", "-a"])
+    print ps_output
+    return containers
+
+
+def spawn_containers(device_id, device):
+    print("%s: spawning" % device_id)
+    if device["network"] == "localhost":
+        return
+    elif device["type"] == "actuator":
+        subprocess.call("docker run --name %s --net %s --ip %s -d plc -N %s -A -I %s254 -P %s -L %s" %
+                        (device["id"], device["network"].split()[0], device["ip"], device_id, device["host_ip"][:-3],
+                         device["port"], device["initial"]), shell=True)
+    elif device["type"] == "sensor":
+        subprocess.call("docker run --name %s --net %s --ip %s -d plc -N %s -S -I %s254 -P %s -L %s -V %s" %
+                        (device["id"], device["network"].split()[0], device["ip"], device_id, device["host_ip"][:-3],
+                         device["port"], device["initial"], device["variance"]), shell=True)
+
+
+def kill_containers(containers):
+    remove_these_containers = map(lambda x: x.c_id, containers)
+    print("killing these containers %s" % remove_these_containers)
+    subprocess.check_output(["docker", "rm", "-f"] + remove_these_containers)
+
+
+def usage(full=False):
+    """Terminal usage message for program"""
+    print("[python] ./plc-launcher.py [-hv] [-f <config-file>] [-H [<hostname>]]")
+    if full:
+        print("""
+        -h --help       : Print Help Message
+        -v --version    : Print version Message
+        -H --hostname   : Hostname of the Historian/Monitor/CentralController or
+        just where ever you can pull the config file
+        -f --file       : Uses stored local config file if no host server default = ./config.json
+        -k --keep       : Keep existing docker containers
+        """)
+
+if __name__ == "__main__":
+    # Default config file
+    config = None
+    host = None
+    keep = True
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hkvf:H:", ["keep", "help", "version", "file=", "hostname="])
+    except getopt.GetoptError as err:
+        # print help information and exit:
+        print(str(err))  # will print something like "option -a not recognized"
+        usage()
+        sys.exit(2)
+    for o, a in opts:
+        if o in ("-V", "--version"):
+            print("PLC Launcher, v1.0")
+            sys.exit()
+        elif o in ("-h", "--help"):
+            usage(full=True)
+            sys.exit()
+        elif o in ("-f", "-file"):
+            configfile = a
+        elif o in ("-k", "-keep"):
+            keep = False
+        elif o in ("-n", "--hostname"):
+            if requests.get(a).status_code != 200:
+                print "Unable to connect to Hostname provided: %s" % a
+                usage(True)
+                sys.exit()
+            else:
+                host = a
+        else:
+            assert False, "unhandled option"
+
+    try:
+        if config:
+            config = json.loads(open(config, 'r').read())
+        else:
+            config = requests.get("%s/api/modbus/configuration" % host).json()
+        network_list = []
+        for i in config:
+            b = config[i]
+            if b["network"] in ["localhost", "127.0.0.1"]:
+                continue
+	    if b["network"] not in network_list:
+                if not generate_network(b["network"].split()[0], b["interface"], "%s0/24" % b["host_ip"][:-3],
+                                        "%s1" % b["host_ip"][:-3]):
+                    raise Exception("Please check your configuration file the "
+                                    "following network was unable to generate: %s" % b)
+                else:
+                    network_list.append(b["network"])
+            spawn_containers(i, b)
+        print("Press CTRL-C to shut down service")
+        while True:
+            continue
+    except KeyboardInterrupt:
+        print "Caught Interrupt, spinning down containers and exiting"
+        subprocess.call("docker rm $(docket ps -a -q)", shell=True)
+        subprocess.call("docker network rm $(docket network ls -q)", shell=True)
+        exit()
+    except Exception as e:
+        print e.message
+        sys.exit()
+    except IOError:
+        print("Error opening '%s': File Not Found" % config)
+        sys.exit()

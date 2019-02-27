@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<!-- SCADA Simulator
+
+ Copyright 2018 Carnegie Mellon University. All Rights Reserved.
+
+ NO WARRANTY. THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE ENGINEERING INSTITUTE MATERIAL IS FURNISHED ON AN "AS-IS" BASIS. CARNEGIE MELLON UNIVERSITY MAKES NO WARRANTIES OF ANY KIND, EITHER EXPRESSED OR IMPLIED, AS TO ANY MATTER INCLUDING, BUT NOT LIMITED TO, WARRANTY OF FITNESS FOR PURPOSE OR MERCHANTABILITY, EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE MATERIAL. CARNEGIE MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND WITH RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
+
+ Released under a MIT (SEI)-style license, please see license.txt or contact permission@sei.cmu.edu for full terms.
+
+ [DISTRIBUTION STATEMENT A] This material has been approved for public release and unlimited distribution.  Please see Copyright notice for non-US Government use and distribution.
+ This Software includes and/or makes use of the following Third-Party Software subject to its own license:
+ 1. Packery (https://packery.metafizzy.co/license.html) Copyright 2018 metafizzy.
+ 2. Bootstrap (https://getbootstrap.com/docs/4.0/about/license/) Copyright 2011-2018  Twitter, Inc. and Bootstrap Authors.
+ 3. JIT/Spacetree (https://philogb.github.io/jit/demos.html) Copyright 2013 Sencha Labs.
+ 4. html5shiv (https://github.com/aFarkas/html5shiv/blob/master/MIT%20and%20GPL2%20licenses.md) Copyright 2014 Alexander Farkas.
+ 5. jquery (https://jquery.org/license/) Copyright 2018 jquery foundation.
+ 6. CanvasJS (https://canvasjs.com/license/) Copyright 2018 fenopix.
+ 7. Respond.js (https://github.com/scottjehl/Respond/blob/master/LICENSE-MIT) Copyright 2012 Scott Jehl.
+ 8. Datatables (https://datatables.net/license/) Copyright 2007 SpryMedia.
+ 9. jquery-bridget (https://github.com/desandro/jquery-bridget) Copyright 2018 David DeSandro.
+ 10. Draggabilly (https://draggabilly.desandro.com/) Copyright 2018 David DeSandro.
+ 11. Business Casual Bootstrap Theme (https://startbootstrap.com/template-overviews/business-casual/) Copyright 2013 Blackrock Digital LLC.
+ 12. Glyphicons Fonts (https://www.glyphicons.com/license/) Copyright 2010 - 2018 GLYPHICONS.
+ 13. Bootstrap Toggle (http://www.bootstraptoggle.com/) Copyright 2011-2014 Min Hur, The New York Times.
+ DM18-1351
+-->
+
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>SCADA Sensor System</title>
+
+    <!-- CSS Files -->
+    <link type="text/css" href="/css/packery-docs.css" rel="stylesheet"/>
+    <link type="text/css" href="/css/bootstrap.min.css" rel="stylesheet"/>
+    <link type="text/css" href="/css/bootstrap-toggle.min.css" rel="stylesheet"/>
+    <link type="text/css" href="/css/map.css" rel="stylesheet"/>
+    <link type="text/css" href="/css/Spacetree.css" rel="stylesheet"/>
+
+      <script src='/js/html5shiv.js'></script>
+      <script src='/js/jquery-2.2.0.min.js'></script>
+      <script src='/js/canvasjs.min.js'></script>
+      <script src='/js/jit.js'></script>
+      <script src='/js/index_map_gen.js'></script>
+      <script src='/js/respond.min.js'></script>
+      <script src='/js/jquery.js'></script>
+      <script src='/js/bootstrap.min.js'></script>
+
+
+</head>
+<body onload="init('{{root_id}}')" style="background-color:#b7d7e8">
+
+    <div class="grid">
+      <div class="grid-item grid-item--title"><h1>{{system_name}} Industrial SCADA System</h1></div>
+      <div class="grid-item grid-item--map" id="infovis"></div>
+      <div class="grid-item grid-item--actuator" id="root_node"></div>
+      <div class="grid-item grid-item--actuator" id="actuator_0"></div>
+      <div class="grid-item grid-item--actuator" id="actuator_1"></div>
+      <div class="grid-item grid-item--actuator" id="actuator_2"></div>
+      <div class="grid-item grid-item--actuator" id="actuator_3"></div>
+      <div class="grid-item grid-item--title"><h1>{{system_name}} Sensor System</h1></div>
+        {% for i in sensor_list %}
+            <div class="grid-item grid-item--sensor" id="{{i['id']}}"></div>
+        {% endfor %}
+    </div>
+      <script src='/js/packery.pkgd.js'></script>
+      <script src='/js/draggabilly.pkgd.js'></script>
+      <script src="/js/grid.js"></script>
+
+
+
+</body>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <p>Administrator console contains sensitive information;<br>
+				              Do not provide access to unauthorized users</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+
+
+</html>
