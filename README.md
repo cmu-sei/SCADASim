@@ -137,7 +137,6 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
         "sub_devices" : {}
 }
 ```
-
 * **9c. HMI**
    * 9c.1 The required keys are: name_system, name, location, actuators, and sub_devices. The default Host and HMI IP address is 127.0.0.1 and listening port for the host is 5020 and HMI is 5021
    * 9c.2 The Host IP address is the web page front end for the HMI while the HMI IP address is the interface communicating with the PLC devices
@@ -211,8 +210,6 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
 }
 ```
 * **9e. Complete Example:**
-
-**Example**
 ```json5
 {
   "Historian": {
