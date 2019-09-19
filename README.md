@@ -8,7 +8,7 @@ SCADA sensor networks are ubiquitous in industry and notoriously difficult to se
 
 The SCADA simulator requires at least three different systems: A historian, one or more HMIs, and a PLC. Each component can run on an independent Ubuntu virtual machine.
 
-#<center> Table of Contents</center>
+# Table of Contents
 1. [Check out SCADA code](#Pull-SCADA-Source-Code)
 2. [Install Dependencies](#Install-Dependencies)
 3. [Setup Postgres Database](#Setup-Postgres-DB-for-Deployment)
@@ -52,7 +52,7 @@ Troubleshoot 1: Make sure if you have a distributed SCADA network that you can c
 
 Troubleshoot 2: Ensure the postgres service is on and the pg_hba.conf file allows for users to connect remotely to the defined HMIs.
 ## 5. <a name="Local-Deployment"></a>Local Deployment - Open three terminals and navigate to the SCADA home directory
-<center>**Data Server - Terminal 1**</center>
+**Data Server - Terminal 1**
 ```bash
 $ python ./dataserver.py --help # Help CLI arguments
 $ python ./dataserver.py -u <db-username> -d <db-name> -w <db-password>
@@ -61,7 +61,7 @@ Open browser and go to http://localhost:5000
 
 Troubleshoot 1: Default port is port 5000 ensure that the firewall allows communication over port 5000.
 
-<center>**HMI Server - Terminal 2**</center>
+**HMI Server - Terminal 2**
 ```bash
 $ python ./HMI_Server.py --help # Help CLI arguments
 $ python ./HMI_Server.py -p 5001 -u <db-username> -d <db-name> -w <db-password>
@@ -70,7 +70,7 @@ Troubleshoot 1: Ensure that the Data Server is started and currently running.
 
 Troubleshoot 2: Ensure firewall allows communication over port 5001 local
 
-<center>**PLC Engine - Terminal 3**</center>
+**PLC Engine - Terminal 3**
 ```bash
 $ python ./PLC_manager.py --help # Help CLI arguments
 $ python ./PLC_manager.py -f path/to/config.json
@@ -81,7 +81,7 @@ Troubleshoot 2: Ensure firewall allows communication over port 5001 local.
 
 ## 6. <a name="Historian-Deployment"></a>Historian Deployment - Only the Data Server is required for the historian
 
-<center>**Data Server - Terminal 1**</center>
+**Data Server - Terminal 1**
 ```bash
 $ python ./dataserver.py --help # Help CLI arguments
 $ python ./dataserver.py -i <host-ip> -p <host-port> -u <db-username> -d <db-name> -w <db-password>
@@ -89,13 +89,13 @@ $ python ./dataserver.py -i <host-ip> -p <host-port> -u <db-username> -d <db-nam
 Troubleshoot 1: Ensure that the firewall allows communication over the defined port. If the port number is low then sudo may be required.
 ## 7. <a name="HMI-Deployment"></a>HMI Deployment - Open two terminals and navigate to JASPR home directory.
 
-<center>**Data Server - Terminal 1**</center>
+**Data Server - Terminal 1**
 ```bash
 $ python ./dataserver.py --help # Help CLI arguments
 $ python ./dataserver.py -i <host-ip> -p <host-port> -u <db-username> -d <db-name> -w <db-password>
 ```
 Troubleshoot 1: Ensure that the firewall allows communication over the defined port. If the port number is low then sudo may be required.
-<center>**7b. HMI Server - Terminal 2**</center>
+**7b. HMI Server - Terminal 2**
 ```bash
 $ python ./HMI_Server.py --help # Help CLI arguments
 $ python ./HMI_Server.py -i <host-ip> -p <host-port> -u <db-username> -d <db-name> -w <db-password>
@@ -118,13 +118,11 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
    * 9b.2 Sub Devices are HMIs or Controllers(PLC Device) the Historian cannot have any controller devices and must have atleast one HMI
    * 9b.3 The "Status" Actuator is required for all devices this allows users to turn on and off services that the device provides as well as all services dependent on the device ex: if the Historian is disabled then all HMIs will be disabled and all PLC devices relying on the HMI.
    * 9b.4 The Historian only has one Actuator and cannot have any additional sensors or actuators.
-   * 9b.5 Below is an example of the Historian Configuration:
-
-<center>**Example Historian Configuration**</center>
-```json
+   * 9b.5 **Example of Historian Configuration:**
+```
 {
     "Historian": {
-        "name_system": <SCADA SYSTEM NAME>,
+        "name_system": <SCADA_SYSTEM_NAME>,
         "name": <Historian NAME>,
         "location": <Location>,
         "device_type": "Historian",
@@ -145,9 +143,8 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
    * 9c.2 The Host IP address is the web page front end for the HMI while the HMI IP address is the interface communicating with the PLC devices
    * 9c.3 The HMI only has one Actuator and cannot have any additional sensors or actuators.
    * 9c.4 The HMI Identifier is a unique string that identifies the HMI. This is what will be used to bind PLC devices to the HMI and can be any unique string
-
-<center>**Example HMI Configuration**</center>
-```json
+   * **Example of HMI Configuration:**
+```
 <HMI Identifier> : {
     "name_system": <HMI System Name>,
     "name": <HMI Name>,
@@ -171,9 +168,8 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
    * 9d.2 The IP address will be assigned during the initialization phase of deployment
    * 9d.3 The controller can have as many actuators and sensors necessary but, must have atleast one actuator or sensor.
    * 9d.4 The PLC Identifier is a unique string that identifies the HMI. This is what will be used to bind PLC devices to the HMI and can be any unique string
-
-<center>**Example Controller Configuration**</center>
-```json
+   * **Example of Controller Configuration:**
+```
 <PLC Identifier> : {
     "name_system": <PLC System Name>,
     "name": <PLC Name>,
@@ -189,9 +185,8 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
    * 9e.2 The variability is the how far +- the sensor readings will fluctuate from the current_value
    * 9e.3 The valid types are: "locked", "enabled", "open", "temperature", "pressure", "humidity", "flow", "live-stream", "speed", "rotation", "power", "motion"
    * 9e.4 The threshold is optional if not defined the PLC will only fail if the controller tells it to fail. Otherwise the Sensors Controller will fail/shutoff if the sensor reads below the min or above the max
-
-<center>**Example Sensor Configuration**</center>
-```json
+   * **Example of the Sensor Configuration:**
+```
 <Sensor Identifier>: {
     "type": <PLC Type>,
     "units": <Unit of Measure>,
@@ -206,9 +201,8 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
    * 9f.3 The valid types are: "locked", "enabled", "live-stream", "variable", "relational" with locked, enabled and live-stream will have sensors the reflect the actuator current value
    * 9f.4 Type with Variable will have a relationship of positive or negative while relational will have a relationship of variable
    * 9f.5 The master field must have the sensor identifier of which sensor that will reflect the changes spawned from the actuator
-
-<center>**Example Actuator Configuration**</center>
-```json
+   * **Example of Actuator Configuration:**
+```
 <Actuator Identifier>: {
     "type": <PLC Type>,
     "initial_value": <Initial Value>,
@@ -218,8 +212,8 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
 ```
 * **9e. Complete Example:**
 
-<center>**Example**</center>
-```json
+**Example**
+```
 {
   "Historian": {
     "name_system": "SCADA System",
@@ -320,7 +314,7 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
 
 ## 10. <a name="Install and Configure Docker"></a>Install and Configure Docker
 To install Docker on your PLC Box follow the instructions in the following Link: https://docs.docker.com/engine/installation/, however this guide will be going over how to install on a CentOS 5 or above.
-<center>**Download and Install Docker (you must be in the scada home directory)**</center>
+**Download and Install Docker (you must be in the scada home directory)**
 ```bash
 $ cp ./docker.repo /etc/yum.repos.d
 $ sudo yum update && sudo yum install docker-engine
@@ -328,6 +322,6 @@ $ sudo systemctl enable docker.service
 $ sudo systemctl start docker.service
 ```
 
-<center>**Prepare docker image for arduino engine**</center>
+**Prepare docker image for arduino engine**
 ```bash
 ```
