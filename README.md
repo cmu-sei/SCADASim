@@ -2,7 +2,7 @@
 
 ## Overview
 
-SCADA sensor networks are ubiquitous in industry and notoriously difficult to secure effectively. This simulator generates network traffic in a virtual environment and allows students the opportunity to view and work with modbus traffic, the protocol used by SCADA systems. This system fully encompasses a basic SCADA network and allows 1 to N PLC devices attached to HMIs that feed into a central historian. The topology is controled by a single json configuration file, allowing for simple or complex sensor networks.
+SCADA sensor networks are ubiquitous in industry and notoriously difficult to secure effectively. This simulator generates network traffic in a virtual environment and allows students the opportunity to view and work with modbus traffic, the protocol used by SCADA systems. This system fully encompasses a basic SCADA network and allows 1 to N PLC devices attached to HMIs that feed into a central historian. The topology is controlled  by a single json configuration file, allowing for simple or complex sensor networks.
 
 ## Getting Started
 
@@ -11,8 +11,8 @@ The SCADA simulator requires at least three different systems: A historian, one 
 #<center> Table of Contents</center>
 1. [Check out SCADA code](#Pull-SCADA-Source-Code)
 2. [Install Dependencies](#Install-Dependencies)
-3. [Setup Postgres DB](#Setup-Postgres-DB-for-Deployment)
-4. [Initilize SCADA](#Initilize-SCADA)
+3. [Setup Postgres Database](#Setup-Postgres-DB-for-Deployment)
+4. [Initialize SCADA](#Initialize-SCADA)
 5. [Local Deployment](#Local-Deployment)
 6. [Historian Deployment](#Historian-Deployment)
 7. [HMI Deployment](#HMI-Deployment)
@@ -46,7 +46,7 @@ $ systemctl start postgresql && systemctl enable postgresql
 ```bash
 $ python ./init.py --help # Help CLI arguments
 $ python ./init.py -f path/to/config.json -u <db-username> -d <db-name> -w <db-password> # Local
-$ python ./init.py -s -f path/to/config.json -u <db-username> -d <db-name> -w <db-password> # Distrobuted
+$ python ./init.py -s -f path/to/config.json -u <db-username> -d <db-name> -w <db-password> # Distributed
 ```
 Troubleshoot 1: Make sure if you have a distributed SCADA network that you can connect to HMIs defined in the configuration file.
 
@@ -112,13 +112,13 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
 ```
 
 ## 9. <a name="Configuration-File-Standard"></a>Configuration File Standard
-* 9a. This project simulates a SCADA system that has three unique parts: Histoian, HMI, and PLC. The Historian is the central repository for all of the Human-Managment Interfaces. The Historian poles the HMIs to gather a historiacal picture of what the HMIs are seeing. The default poling interval is 30 seconds, if the poling interval should be larger or shorter then the sleep time in HMI_Server.py/historina_handler can be changed up or down. The HMIs are a real time view of the PLC devices readings. This allows users to identify real time issues associated with each individual PLC devices. The HMI unlike the Historian only maintains records of the last 1000 readings pulled from the PLC devices. Finally the PLC devices are modled off of the arduino controller archetecture. Each ardunino has its own unique IP address and allows two way communication. These modules are comprised of actuators and sensors with the actuators having direct relationship with the sesnors, meaning if a heater actuator is turned up the temperture sensor will start rising in value. The next couple of sections will walk you through how to properly configure the json configuration file in order to correctly map your SCADA System.
+* 9a. This project simulates a SCADA system that has three unique parts: Historian, HMI, and PLC. The Historian is the central repository for all of the Human-Management Interfaces. The Historian polls the HMIs to gather a historical picture of what the HMIs are seeing. The default poling interval is 30 seconds, if the polling interval should be larger or shorter then the sleep time in HMI_Server.py/historian_handler can be changed up or down. The HMIs are a real time view of the PLC devices readings. This allows users to identify real time issues associated with each individual PLC devices. The HMI unlike the Historian only maintains records of the last 1000 readings pulled from the PLC devices. Finally the PLC devices are modeled off of the arduino controller architecture. Each arduino has its own unique IP address and allows two way communication. These modules are comprised of actuators and sensors with the actuators having direct relationship with the sensors, meaning if a heater actuator is turned up the temperature sensor will start rising in value. The next couple of sections will walk you through how to properly configure the json configuration file in order to correctly map your SCADA System.
 * **9b. Historian**
    * 9b.1 The required keys are: name_system, name, location, actuators, and sub_devices. The default IP address is 127.0.0.1 and listening port is 5020
-   * 9b.2 Sub Devices are HMIs or Controllers(PLC Device) the Historian cannot have any controller devices and must have atleaset one HMI
-   * 9b.3 The "Status" Actuator is required for all devices this allows users to turn on and off services that the device provides as well as all services dependant on the device ex: if the Historian is disabled then all HMIs will be disabled and all PLC devices relying on the HMI.
+   * 9b.2 Sub Devices are HMIs or Controllers(PLC Device) the Historian cannot have any controller devices and must have atleast one HMI
+   * 9b.3 The "Status" Actuator is required for all devices this allows users to turn on and off services that the device provides as well as all services dependent on the device ex: if the Historian is disabled then all HMIs will be disabled and all PLC devices relying on the HMI.
    * 9b.4 The Historian only has one Actuator and cannot have any additional sensors or actuators.
-   * 9b.5 Below is an example of the Hisorian Configuration:
+   * 9b.5 Below is an example of the Historian Configuration:
 
 <center>**Example Historian Configuration**</center>
 ```json
@@ -168,8 +168,8 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
 ```
 * **9d. Controller**
    * 9d.1 The required keys are: name_system, name, location, and sub_devices.
-   * 9d.2 The IP address will be assigned during the initilization phase of deployment
-   * 9d.3 The controller can have as many actuators and sensors necessary but, must have atleaset one actuator or sensor.
+   * 9d.2 The IP address will be assigned during the initialization phase of deployment
+   * 9d.3 The controller can have as many actuators and sensors necessary but, must have atleast one actuator or sensor.
    * 9d.4 The PLC Identifier is a unique string that identifies the HMI. This is what will be used to bind PLC devices to the HMI and can be any unique string
 
 <center>**Example Controller Configuration**</center>
@@ -186,7 +186,7 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
 ```
 * **9e. Sensor**
    * 9e.1 The required keys are: type, units, initial_value, and variability.
-   * 9e.2 The variability is the how far +- the sensor readings will flucuate from the current_value
+   * 9e.2 The variability is the how far +- the sensor readings will fluctuate from the current_value
    * 9e.3 The valid types are: "locked", "enabled", "open", "temperature", "pressure", "humidity", "flow", "live-stream", "speed", "rotation", "power", "motion"
    * 9e.4 The threshold is optional if not defined the PLC will only fail if the controller tells it to fail. Otherwise the Sensors Controller will fail/shutoff if the sensor reads below the min or above the max
 
@@ -202,7 +202,7 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
 ```
 * **9f. Actuator**
    * 9f.1 The required keys are: type, and initial_value.
-   * 9f.2 The relationship can be as follows: positive - The value increases, negative - The value decreases, and variable - The value can both increase or decrease according to the current value (0 OFF 1 Decrease 2 Maintian 3 Increase)
+   * 9f.2 The relationship can be as follows: positive - The value increases, negative - The value decreases, and variable - The value can both increase or decrease according to the current value (0 OFF 1 Decrease 2 Maintain 3 Increase)
    * 9f.3 The valid types are: "locked", "enabled", "live-stream", "variable", "relational" with locked, enabled and live-stream will have sensors the reflect the actuator current value
    * 9f.4 Type with Variable will have a relationship of positive or negative while relational will have a relationship of variable
    * 9f.5 The master field must have the sensor identifier of which sensor that will reflect the changes spawned from the actuator
@@ -328,6 +328,6 @@ $ sudo systemctl enable docker.service
 $ sudo systemctl start docker.service
 ```
 
-<center>**Prepare docker image for ardunio engine**</center>
+<center>**Prepare docker image for arduino engine**</center>
 ```bash
 ```
