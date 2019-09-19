@@ -8,7 +8,7 @@ SCADA sensor networks are ubiquitous in industry and notoriously difficult to se
 
 The SCADA simulator requires at least three different systems: A historian, one or more HMIs, and a PLC. Each component can run on an independent Ubuntu virtual machine.
 
-#<center> Table of Contents</center>
+# Table of Contents
 1. [Check out SCADA code](#Pull-SCADA-Source-Code)
 2. [Install Dependencies](#Install-Dependencies)
 3. [Setup Postgres Database](#Setup-Postgres-DB-for-Deployment)
@@ -118,9 +118,7 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
    * 9b.2 Sub Devices are HMIs or Controllers(PLC Device) the Historian cannot have any controller devices and must have atleast one HMI
    * 9b.3 The "Status" Actuator is required for all devices this allows users to turn on and off services that the device provides as well as all services dependent on the device ex: if the Historian is disabled then all HMIs will be disabled and all PLC devices relying on the HMI.
    * 9b.4 The Historian only has one Actuator and cannot have any additional sensors or actuators.
-   * 9b.5 Below is an example of the Historian Configuration:
-
-**Example Historian Configuration**
+   * 9b.5 **Example of Historian Configuration:**
 ```
 {
     "Historian": {
@@ -145,8 +143,7 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
    * 9c.2 The Host IP address is the web page front end for the HMI while the HMI IP address is the interface communicating with the PLC devices
    * 9c.3 The HMI only has one Actuator and cannot have any additional sensors or actuators.
    * 9c.4 The HMI Identifier is a unique string that identifies the HMI. This is what will be used to bind PLC devices to the HMI and can be any unique string
-
-**Example HMI Configuration**
+   * **Example of HMI Configuration:**
 ```
 <HMI Identifier> : {
     "name_system": <HMI System Name>,
@@ -171,8 +168,7 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
    * 9d.2 The IP address will be assigned during the initialization phase of deployment
    * 9d.3 The controller can have as many actuators and sensors necessary but, must have atleast one actuator or sensor.
    * 9d.4 The PLC Identifier is a unique string that identifies the HMI. This is what will be used to bind PLC devices to the HMI and can be any unique string
-
-**Example Controller Configuration**
+   * **Example of Controller Configuration:**
 ```
 <PLC Identifier> : {
     "name_system": <PLC System Name>,
@@ -189,8 +185,7 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
    * 9e.2 The variability is the how far +- the sensor readings will fluctuate from the current_value
    * 9e.3 The valid types are: "locked", "enabled", "open", "temperature", "pressure", "humidity", "flow", "live-stream", "speed", "rotation", "power", "motion"
    * 9e.4 The threshold is optional if not defined the PLC will only fail if the controller tells it to fail. Otherwise the Sensors Controller will fail/shutoff if the sensor reads below the min or above the max
-
-**Example Sensor Configuration**
+   * **Example of the Sensor Configuration:**
 ```
 <Sensor Identifier>: {
     "type": <PLC Type>,
@@ -206,8 +201,7 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
    * 9f.3 The valid types are: "locked", "enabled", "live-stream", "variable", "relational" with locked, enabled and live-stream will have sensors the reflect the actuator current value
    * 9f.4 Type with Variable will have a relationship of positive or negative while relational will have a relationship of variable
    * 9f.5 The master field must have the sensor identifier of which sensor that will reflect the changes spawned from the actuator
-
-**Example Actuator Configuration**
+   * **Example of Actuator Configuration:**
 ```
 <Actuator Identifier>: {
     "type": <PLC Type>,
