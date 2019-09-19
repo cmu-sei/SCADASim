@@ -320,7 +320,7 @@ $ python ./PLC_engine.py -H http://<host-ip>:<host-port>/api/modbus-config
 
 ## 10. <a name="Install and Configure Docker"></a>Install and Configure Docker
 To install Docker on your PLC Box follow the instructions in the following Link: https://docs.docker.com/engine/installation/, however this guide will be going over how to install on a CentOS 5 or above.
-** <p align="center">Download and Install Docker (you must be in the scada home directory)</p>**
+**Download and Install Docker (you must be in the scada home directory)**
 ```bash
 $ cp ./docker.repo /etc/yum.repos.d
 $ sudo yum update && sudo yum install docker-engine
