@@ -1,5 +1,0 @@
-postgresql
-postgresql-contrib
-postgresql-devel
-postgresql-server
-python-devel

@@ -1,7 +1,0 @@
-psycopg2
-iPy
-requests
-flask
-pymodbus
-gevent
-
